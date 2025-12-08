@@ -1,0 +1,8 @@
+# Ignore model files
+*.onnx
+*.onnx.data
+
+# Ignore local virtual environment
+venv/
+__pycache__/
+.ipynb_checkpoints/
