@@ -30,3 +30,19 @@ A comprehensive end-to-end Machine Learning project that predicts the **1-year r
   - **Analysis**: Feature engineering, extensive EDA, and risk metric evaluation.
 
 [**Explore the Midterm Project**](./Midterm%20Project/README.md)
+
+## 🏆 Capstone Project 1: ASEAN Investment Vehicle Analysis
+
+A deep learning project exploring investment suitability in the ASEAN market (Singapore, Malaysia, Indonesia, etc.).
+
+### Key Highlights
+
+- **Goal**: Predict investment vehicle suitability (Attractive/Unattractive) using historical data.
+- **Tech Stack**:
+  - **Models**: Neural Networks (TensorFlow/Keras), converted to **ONNX** for optimized inference.
+  - **Data**: Real-time/Historical data fetching via `yfinance`.
+  - **Deployment**:
+    - **Serverless**: AWS Lambda (Containerized, ONNX Runtime).
+    - **Kubernetes**: Scalable deployment with Kind.
+
+[**Explore Capstone Project 1**](./Capstone%201/README.md)

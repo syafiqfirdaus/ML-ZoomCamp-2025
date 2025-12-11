@@ -1,0 +1,16 @@
+FROM public.ecr.aws/lambda/python:3.11
+
+# Install build tools
+RUN yum update -y && \
+    yum install -y gcc gcc-c++ python3-devel && \
+    yum clean all
+
+COPY requirements-lambda.txt requirements.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+COPY best_model.onnx .
+COPY scaler.bin .
+COPY lambda_function.py .
+
+CMD [ "lambda_function.handler" ]
