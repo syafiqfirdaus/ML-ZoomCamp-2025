@@ -103,3 +103,10 @@ curl -X POST -H "Content-Type: application/json" -d '{"features": [0.01, 0.02, 0
 1. Create venv: `python -m venv .venv`
 2. Activate: `source .venv/bin/activate`
 3. Install: `pip install -r requirements.txt`
+
+## Acknowledgments
+
+- **ML ZoomCamp 2025** by [DataTalks.Club](https://datatalks.club/) - For the comprehensive machine learning engineering curriculum
+- **Google Antigravity** - AI coding assistant for development support and best practices
+- **Yahoo Finance API** - For providing financial market data
+- **Open Source Community** - For the amazing tools and frameworks (TensorFlow, Keras, Flask, Docker, Kubernetes)
