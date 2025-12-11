@@ -29,12 +29,18 @@ Asset Classes:
 
 ```mermaid
 graph LR
-    A[Data Sources<br/>(Yahoo Finance)] --> B[Data Pipeline<br/>(Fetch & Preprocess)]
-    B --> C[Model Training<br/>(TensorFlow/Keras)]
-    C --> D[Model Conversion<br/>(ONNX)]
+    A["Data Sources
+    (Yahoo Finance)"] --> B["Data Pipeline
+    (Fetch and Preprocess)"]
+    B --> C["Model Training
+    (TensorFlow/Keras)"]
+    C --> D["Model Conversion
+    (ONNX)"]
     D --> E[Inference API]
-    E --> F[Serverless<br/>(AWS Lambda)]
-    E --> G[Kubernetes<br/>(Flask App)]
+    E --> F["Serverless
+    (AWS Lambda)"]
+    E --> G["Kubernetes
+    (Flask App)"]
 ```
 
 ## Deployment Instructions
