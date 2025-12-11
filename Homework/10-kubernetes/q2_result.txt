@@ -1,0 +1,1 @@
+bash: /home/syafiq-firdaus/.gemini/bin/kind: No such file or directory

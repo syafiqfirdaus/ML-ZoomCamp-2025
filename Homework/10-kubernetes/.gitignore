@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+kubectl
+kind
+build.log
+build.txt
+build_retry.log
+build_retry.txt
+app.log
+.python-version

@@ -14,6 +14,7 @@ This repository contains my solutions and coursework for the [Machine Learning Z
 | **06** | **Decision Trees** | Decision Trees, Random Forest, and XGBoost (Tree-based thinking). | [View](./Homework/06-trees) |
 | **08** | **Deep Learning** | Convolutional Neural Networks (CNNs) for hair type classification using TensorFlow/Keras. | [View](./Homework/08-Deep%20Learning) |
 | **09** | **Serverless** | Deploying Deep Learning models to AWS Lambda using TFLite and Docker. | [View](./Homework/09-serverless) |
+| **10** | **Kubernetes** | Deploying models with Kubernetes, Docker, and Kind. | [View](./Homework/10-kubernetes) |
 
 ## 🚀 Midterm Project: Mutual Funds & ETFs Performance Prediction
 
