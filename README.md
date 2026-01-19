@@ -31,7 +31,7 @@ A comprehensive end-to-end Machine Learning project that predicts the **1-year r
 
 [**Explore the Midterm Project**](./Midterm%20Project/README.md)
 
-## 🏆 Capstone Project 1: ASEAN Investment Vehicle Analysis
+## 🏆 Capstone Project 2: ASEAN Investment Vehicle Analysis
 
 A deep learning project exploring investment suitability in the ASEAN market (Singapore, Malaysia, Indonesia, etc.).
 
@@ -44,5 +44,6 @@ A deep learning project exploring investment suitability in the ASEAN market (Si
   - **Deployment**:
     - **Serverless**: AWS Lambda (Containerized, ONNX Runtime).
     - **Kubernetes**: Scalable deployment with Kind.
+    - **Cloud**: Live deployment on Render.
 
-[**Explore Capstone Project 1**](./Capstone%201/README.md)
+[**Explore Capstone Project 2**](./Capstone%202/README.md)

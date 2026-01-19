@@ -1,10 +1,23 @@
-# Capstone 1: ASEAN Investment Vehicle Analysis
+# Capstone 2: ASEAN Investment Vehicle Analysis
 
 ## Problem Statement
 
 Investors in the ASEAN region often face challenges in comparing different investment vehicles (Stocks, ETFs, REITs, Mutual Funds) across borders. This project aims to use Deep Learning to analyze historical performance and risk metrics to predict the **suitability** or **future risk-adjusted performance** of these assets.
 
 The goal is to build a model that can classify an investment vehicle as "Attractive" or "Unattractive" based on its historical volatility, return, and macro-economic factors (if available).
+
+## Improvements in Capstone 2
+
+This iteration introduces significant enhancements:
+
+1. **Enhanced EDA**: A new detailed notebook `notebook_improved.ipynb` featuring:
+    - **Correlation Heatmaps**: To analyze feature relationships.
+    - **Distribution Plots**: Risk/Return profiles for class separation.
+    - **Technical Indicators**: Visual overlays of RSI and MACD for signal confirmation.
+2. **Live Cloud Deployment**:
+    - Fully configured for **Render** deployment.
+    - Includes `render.yaml` for infrastructure-as-code.
+    - Dockerized with `gunicorn` for production-grade serving.
 
 ## Dataset
 
@@ -41,11 +54,20 @@ graph LR
     (AWS Lambda)"]
     E --> G["Kubernetes
     (Flask App)"]
+    E --> H["Cloud (Render)"]
 ```
 
 ## Deployment Instructions
 
-### 1. Serverless (AWS Lambda)
+### 1. Cloud (Render) - Recommended
+
+This project includes a `render.yaml` Blueprint for easy deployment.
+
+1. Push code to GitHub.
+2. Connect repository to [Render](https://dashboard.render.com).
+3. Render will auto-deploy the `capstone2-app` service.
+
+### 2. Serverless (AWS Lambda)
 
 The Lambda function is containerized using Docker and ONNX Runtime.
 
@@ -60,7 +82,7 @@ docker run -d -p 8080:8080 --name lambda-test capstone1-lambda
 python test_lambda.py
 ```
 
-### 2. Kubernetes (Kind)
+### 3. Kubernetes (Kind)
 
 The Flask serving app is deployed using Kubernetes manifests.
 
@@ -86,6 +108,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"features": [0.01, 0.02, 0
 ```
 
  **Deployment**:
+    - **Cloud**: Render Web Service (Live Public Endpoint).
     - **Serverless**: AWS Lambda (simulated) for inference.
     - **Kubernetes**: Scalable web service for predictions.
 
@@ -96,7 +119,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"features": [0.01, 0.02, 0
 - **TensorFlow / Keras**
 - **Flask / FastAPI**
 - **Docker & Kubernetes (Kind/Minikube)**
-- **AWS Lambda (Serverless)**
+- **AWS Lambda & Render (Cloud)**
 
 ## Setup
 
