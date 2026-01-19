@@ -67,6 +67,20 @@ This project includes a `render.yaml` Blueprint for easy deployment.
 2. Connect repository to [Render](https://dashboard.render.com).
 3. Render will auto-deploy the `capstone2-app` service.
 
+**Live Deployment**: [https://capstone2-app.onrender.com](https://capstone2-app.onrender.com)
+
+**Test the API**:
+
+```bash
+# Health Check
+curl https://capstone2-app.onrender.com/health
+
+# Prediction
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"features": [0.01, 0.02, 0.05, 0.01, 55.0, 0.5, 0.4]}' \
+  https://capstone2-app.onrender.com/predict
+```
+
 ### 2. Serverless (AWS Lambda)
 
 The Lambda function is containerized using Docker and ONNX Runtime.
