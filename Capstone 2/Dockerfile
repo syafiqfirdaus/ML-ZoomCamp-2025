@@ -14,7 +14,7 @@ COPY scaler.bin .
 COPY app.py .
 
 # Standard Render port is 10000, but we can configure it
-ENV PORT=9696
-EXPOSE $PORT
+ENV PORT=10000
+EXPOSE 10000
 
 CMD gunicorn --bind 0.0.0.0:$PORT app:app
