@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: capstone2-app
+    runtime: docker
+    plan: free
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "10000"
