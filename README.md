@@ -46,4 +46,6 @@ A deep learning project exploring investment suitability in the ASEAN market (Si
     - **Kubernetes**: Scalable deployment with Kind.
     - **Cloud**: Live deployment on Render.
 
+**🌐 Live API**: [https://capstone2-app.onrender.com](https://capstone2-app.onrender.com)
+
 [**Explore Capstone Project 2**](./Capstone%202/README.md)
