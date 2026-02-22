@@ -2,6 +2,14 @@
 
 This repository contains my solutions and coursework for the [Machine Learning Zoomcamp](https://github.com/DataTalksClub/machine-learning-zoomcamp) by DataTalks.Club.
 
+## 🎓 Certificate
+
+I am proud to have successfully completed the ML Zoomcamp 2025!
+
+- **Certificate ID**: `b77e193b1f0a0b3b86dd9c9de5695bf1fd573e35`
+- **Official Certificate**: [Download PDF](./Certificate/Syafiq%20Firdaus%20-%20Certs.pdf)
+- **Verification URL**: [DataTalks.Club Certificate](https://certificate.datatalks.club/ml-zoomcamp/2025/b77e193b1f0a0b3b86dd9c9de5695bf1fd573e35.pdf)
+
 ## 📚 Homework Modules
 
 | Module | Topic | Description | Link |
