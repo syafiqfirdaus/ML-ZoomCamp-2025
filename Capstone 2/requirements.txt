@@ -4,7 +4,10 @@ numpy
 matplotlib
 seaborn
 scikit-learn
+joblib
+onnxruntime
 tensorflow
 flask
 gunicorn
+requests
 jupyter

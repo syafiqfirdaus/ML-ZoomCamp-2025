@@ -5,7 +5,7 @@
 This project tackles investment fund analysis using machine learning to solve **four distinct prediction problems**:
 
 ### 1. Fund Performance Prediction (Regression)
-Predict the **1-year return** of mutual funds and ETFs based on their characteristics, historical performance, asset allocation, and risk metrics. This helps investors identify funds likely to perform well.
+Estimate the dataset's **reported 1-year return** from fund characteristics, historical performance, asset allocation, and risk metrics. This is a cross-sectional estimation task, not a forecast of a future return.
 
 ### 2. Investment Quality Classification (Binary Classification)
 Classify funds as **"Good Investment" or "Poor Investment"** based on their Morningstar overall rating (>=4 stars = good, <4 stars = poor). This provides a simple recommendation system for investors.
@@ -84,7 +84,7 @@ For each problem, we compare multiple algorithms:
 - **XGBoost Classifier** (primary model)
 
 ### Feature Engineering
-- Handle missing values (imputation strategies)
+- Handle missing values with an imputer fitted only on each training split
 - Encode categorical variables (one-hot encoding)
 - Scale numerical features (StandardScaler)
 - Feature selection based on importance
@@ -225,17 +225,19 @@ curl http://localhost:5000/
 
 | Problem Type | Best Model | Primary Metric | Score |
 |-------------|------------|----------------|-------|
-| 1-Year Return Prediction | XGBoost | RMSE | TBD |
-| Investment Quality | XGBoost | ROC-AUC | TBD |
-| Risk Rating | XGBoost | F1-Score (Macro) | TBD |
+| Reported 1-Year Return Estimation | XGBoost | RMSE | Not published; run `train.py` |
+| Investment Quality | XGBoost | ROC-AUC | Not published; run `train.py` |
+| Risk Rating | XGBoost | F1-Score (Macro) | Not published; run `train.py` |
 
 *Final metrics will be updated after training*
 
-### Key Findings
-- Most important features for performance prediction: historical returns, expense ratios, fund size
-- ESG scores show moderate correlation with long-term performance
-- Sector allocation significantly impacts risk ratings
-- Large-cap funds have more predictable returns than small-cap
+### Questions for Empirical Validation
+
+The repository does not claim numerical findings until a reproducible training run has produced them. The analysis is intended to test feature importance, ESG relationships, sector effects, and differences between fund categories.
+
+### Interpretation Limitation
+
+The included tabular data is a cross-sectional snapshot. Because it does not align features at time `t` with a subsequent 12-month target at `t+12 months`, regression scores must not be presented as evidence of genuine future-return forecasting. A forecasting extension requires dated historical snapshots and chronological validation.
 
 ## Dependencies
 

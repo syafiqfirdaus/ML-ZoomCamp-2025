@@ -6,11 +6,11 @@ This project implements a comprehensive machine learning solution for analyzing 
 
 ## Problems Solved
 
-### 1. Regression: 1-Year Return Prediction
-- **Goal:** Predict expected 1-year returns
+### 1. Regression: Reported 1-Year Return Estimation
+- **Goal:** Estimate the 1-year return field in the cross-sectional dataset
 - **Model:** XGBoost Regressor
 - **Metrics:** RMSE, MAE, R²
-- **Use Case:** Help investors estimate future fund performance
+- **Use Case:** Demonstrate regression on historical fund attributes; not future forecasting
 
 ### 2. Binary Classification: Investment Quality
 - **Goal:** Classify funds as "good" (rating ≥4) or "poor" (rating <4)
@@ -108,7 +108,7 @@ Midterm Project/
 
 ### Data Processing
 - Handled missing values (50%+ missing in many features)
-- Feature imputation using median strategy
+- Feature imputation using medians learned from training data only
 - StandardScaler for feature normalization
 - Combined mutual funds and ETFs datasets
 
@@ -176,10 +176,7 @@ docker run -d -p 5000:5000 -v $(pwd)/models:/app/models fund-predictor
 
 *Note: Run `train.py` to generate actual metrics*
 
-Expected performance:
-- **Regression:** R² > 0.6, RMSE < 0.15
-- **Binary Classification:** F1-Score > 0.75, ROC-AUC > 0.80
-- **Multi-class:** Macro F1-Score > 0.65, Accuracy > 0.70
+No expected or final scores are asserted without a reproducible run. Execute `python train.py` to generate metrics for the current data and environment.
 
 ## Key Features
 
@@ -235,6 +232,7 @@ Expected performance:
 3. **Survivorship Bias:** Only active funds included
 4. **Categorical Features:** Limited use of categorical variables
 5. **No Time-Series:** Price history not utilized
+6. **No Forecasting Target:** Features are not timestamp-aligned with a subsequent 12-month return
 
 ## Lessons Learned
 

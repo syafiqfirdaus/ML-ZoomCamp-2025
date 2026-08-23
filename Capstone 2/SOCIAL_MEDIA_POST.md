@@ -14,29 +14,29 @@ I'm excited to share my latest project from the ML ZoomCamp 2025 - a comprehensi
 
 **🛠️ Technical Highlights:**
 ✅ Model conversion to ONNX for optimized inference
-✅ Deployed as **Serverless (AWS Lambda)** using Docker
+✅ Served through a **local Flask API** using ONNX Runtime and Docker
 ✅ Deployed on **Kubernetes (Kind)** with Flask API
 ✅ Complete CI/CD pipeline with automated data fetching and preprocessing
 ✅ RESTful API endpoints for real-time predictions
 
 **📈 Tech Stack:**
-Python | TensorFlow/Keras | Flask | Docker | Kubernetes | AWS Lambda | ONNX Runtime | scikit-learn | yfinance
+Python | TensorFlow/Keras | Flask | Docker | Kubernetes | ONNX Runtime | scikit-learn | yfinance
 
 **Key Learnings:**
 
 - End-to-end ML pipeline development
 - Model optimization and deployment strategies
 - Container orchestration with Kubernetes
-- Serverless architecture patterns
+- Local inference service patterns
 - Financial data analysis and feature engineering
 
-This project reinforced the importance of not just building models, but deploying them in production-ready environments. The ability to serve predictions via both serverless and containerized deployments provides flexibility for different use cases.
+This project reinforced the importance of not just building models, but packaging reproducible inference services. The API runs locally, in Docker, or on a local Kubernetes cluster.
 
 Big thanks to the ML ZoomCamp community for the amazing learning journey! 🙏
 
 🔗 Check out the full project on GitHub: [Your GitHub Link]
 
-# MachineLearning #DeepLearning #MLOps #Kubernetes #AWS #Docker #Python #DataScience #FinTech #ASEAN #MLZoomCamp #AI #CloudComputing
+# MachineLearning #DeepLearning #MLOps #Kubernetes #Docker #Python #DataScience #FinTech #ASEAN #MLZoomCamp #AI
 
 ---
 
@@ -45,7 +45,7 @@ Big thanks to the ML ZoomCamp community for the amazing learning journey! 🙏
 **Tweet 1:**
 🚀 Just shipped my first ML Capstone project! Built a Deep Learning system to analyze ASEAN investment vehicles (stocks, ETFs, REITs) across 6 countries 📊
 
-Deployed on both AWS Lambda (serverless) AND Kubernetes!
+Deployed locally with Flask/Docker and on Kubernetes!
 
 Thread 🧵👇
 
@@ -58,7 +58,7 @@ Thread 🧵👇
 - ONNX for optimized inference
 - Flask API for serving
 - Docker + K8s for orchestration
-- AWS Lambda for serverless
+- Flask and ONNX Runtime for local inference
 - yfinance for market data
 
 Full pipeline from data → training → deployment!
@@ -77,7 +77,7 @@ Then classifies investments as "Attractive" or "Unattractive"
 - Model conversion (Keras → ONNX) for faster inference
 - Deploying same model to multiple platforms
 - Container orchestration with Kind/K8s
-- Serverless architecture patterns
+- Local API architecture patterns
 
 Production ML is so much more than just training! 🎯
 
@@ -88,7 +88,7 @@ The hands-on approach really helped me understand end-to-end ML engineering.
 
 🔗 Full project: [GitHub Link]
 
-# MLZoomCamp #DataScience #Python #AWS #Kubernetes #DeepLearning
+# MLZoomCamp #DataScience #Python #Docker #Kubernetes #DeepLearning
 
 ---
 
@@ -101,14 +101,14 @@ Just completed my first ML Capstone: ASEAN Investment Analysis using Deep Learni
 Built a complete system that:
 📊 Analyzes stocks, ETFs & REITs across 6 ASEAN countries
 🤖 Uses Deep Learning to predict investment attractiveness
-☁️ Deployed on AWS Lambda (serverless)
+💻 Runs locally through Flask and ONNX Runtime
 🐳 Deployed on Kubernetes (containerized)
 
-Tech: Python | TensorFlow | Docker | Kubernetes | AWS
+Tech: Python | TensorFlow | Flask | ONNX Runtime | Docker | Kubernetes
 
 This journey taught me that ML isn't just about models - it's about building production-ready systems that deliver real value! 💪
 
-# MachineLearning #DeepLearning #MLOps #DataScience #Python #AWS #Kubernetes #TechCareer #100DaysOfCode #MLZoomCamp
+# MachineLearning #DeepLearning #MLOps #DataScience #Python #Docker #Kubernetes #TechCareer #100DaysOfCode #MLZoomCamp
 
 ---
 

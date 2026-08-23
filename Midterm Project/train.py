@@ -20,6 +20,7 @@ from datetime import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
     mean_squared_error, mean_absolute_error, r2_score,
     accuracy_score, precision_score, recall_score, f1_score,
@@ -98,11 +99,14 @@ def select_features(df):
 
 
 def prepare_features(df):
-    """Prepare features for modeling"""
+    """Create targets and return untransformed numerical features."""
     print("\nPreparing features...")
 
     # Create binary target for investment quality
-    df['investment_quality'] = (df['morningstar_overall_rating'] >= 4).astype(int)
+    rating = df['morningstar_overall_rating']
+    df['investment_quality'] = np.where(
+        rating.isna(), np.nan, (rating >= 4).astype(float)
+    )
 
     # Separate targets and features
     target_cols = ['fund_return_1year', 'morningstar_overall_rating',
@@ -114,30 +118,22 @@ def prepare_features(df):
 
     X = df[numerical_cols].copy()
 
-    # Impute missing values
-    imputer = SimpleImputer(strategy='median')
-    X_imputed = pd.DataFrame(
-        imputer.fit_transform(X),
-        columns=X.columns,
-        index=X.index
-    )
+    print(f"  Features shape: {X.shape}")
+    print("  Preprocessing will be fitted separately on each training split")
 
-    print(f"  Features shape: {X_imputed.shape}")
-    print(f"  Missing values after imputation: {X_imputed.isnull().sum().sum()}")
-
-    return df, X_imputed, imputer
+    return df, X
 
 
-def train_regression_model(df, X_imputed):
+def train_regression_model(df, X_features):
     """Train regression model for 1-year return prediction"""
     print("\n" + "="*80)
     print("TRAINING REGRESSION MODEL - 1-Year Return Prediction")
     print("="*80)
 
     # Prepare data
-    y = df.loc[X_imputed.index, 'fund_return_1year']
+    y = df.loc[X_features.index, 'fund_return_1year']
     mask = ~y.isnull()
-    X = X_imputed[mask]
+    X = X_features[mask]
     y = y[mask]
 
     print(f"Dataset size: {X.shape}")
@@ -148,24 +144,23 @@ def train_regression_model(df, X_imputed):
         X, y, test_size=0.2, random_state=42
     )
 
-    # Scale features
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
-    # Train XGBoost model
+    # Fit every learned preprocessing step on training data only.
     print("\nTraining XGBoost Regressor...")
-    model = XGBRegressor(
-        n_estimators=200,
-        learning_rate=0.1,
-        max_depth=6,
-        random_state=42,
-        n_jobs=-1
-    )
-    model.fit(X_train_scaled, y_train)
+    pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler()),
+        ('model', XGBRegressor(
+            n_estimators=200,
+            learning_rate=0.1,
+            max_depth=6,
+            random_state=42,
+            n_jobs=-1
+        )),
+    ])
+    pipeline.fit(X_train, y_train)
 
     # Evaluate
-    y_pred = model.predict(X_test_scaled)
+    y_pred = pipeline.predict(X_test)
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
     mae = mean_absolute_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
@@ -175,20 +170,20 @@ def train_regression_model(df, X_imputed):
     print(f"  MAE: {mae:.4f}")
     print(f"  R²: {r2:.4f}")
 
-    return model, scaler, {'rmse': rmse, 'mae': mae, 'r2': r2}
+    return pipeline, {'rmse': rmse, 'mae': mae, 'r2': r2}
 
 
-def train_binary_classifier(df, X_imputed):
+def train_binary_classifier(df, X_features):
     """Train binary classifier for investment quality"""
     print("\n" + "="*80)
     print("TRAINING BINARY CLASSIFIER - Investment Quality")
     print("="*80)
 
     # Prepare data
-    y = df.loc[X_imputed.index, 'investment_quality']
+    y = df.loc[X_features.index, 'investment_quality']
     mask = ~y.isnull()
-    X = X_imputed[mask]
-    y = y[mask]
+    X = X_features[mask]
+    y = y[mask].astype(int)
 
     print(f"Dataset size: {X.shape}")
     print(f"Class distribution: {y.value_counts().to_dict()}")
@@ -198,26 +193,25 @@ def train_binary_classifier(df, X_imputed):
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # Scale features
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
-    # Train XGBoost model
+    # Fit every learned preprocessing step on training data only.
     print("\nTraining XGBoost Classifier...")
-    model = XGBClassifier(
-        n_estimators=200,
-        learning_rate=0.1,
-        max_depth=6,
-        random_state=42,
-        n_jobs=-1,
-        eval_metric='logloss'
-    )
-    model.fit(X_train_scaled, y_train)
+    pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler()),
+        ('model', XGBClassifier(
+            n_estimators=200,
+            learning_rate=0.1,
+            max_depth=6,
+            random_state=42,
+            n_jobs=-1,
+            eval_metric='logloss'
+        )),
+    ])
+    pipeline.fit(X_train, y_train)
 
     # Evaluate
-    y_pred = model.predict(X_test_scaled)
-    y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
+    y_pred = pipeline.predict(X_test)
+    y_pred_proba = pipeline.predict_proba(X_test)[:, 1]
 
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
@@ -232,22 +226,22 @@ def train_binary_classifier(df, X_imputed):
     print(f"  F1-Score: {f1:.4f}")
     print(f"  ROC-AUC: {roc_auc:.4f}")
 
-    return model, scaler, {
+    return pipeline, {
         'accuracy': accuracy, 'precision': precision,
         'recall': recall, 'f1': f1, 'roc_auc': roc_auc
     }
 
 
-def train_multiclass_classifier(df, X_imputed):
+def train_multiclass_classifier(df, X_features):
     """Train multi-class classifier for risk rating"""
     print("\n" + "="*80)
     print("TRAINING MULTI-CLASS CLASSIFIER - Risk Rating")
     print("="*80)
 
     # Prepare data
-    y = df.loc[X_imputed.index, 'morningstar_risk_rating']
+    y = df.loc[X_features.index, 'morningstar_risk_rating']
     mask = ~y.isnull()
-    X = X_imputed[mask]
+    X = X_features[mask]
     y = y[mask]
 
     # Encode labels
@@ -263,25 +257,24 @@ def train_multiclass_classifier(df, X_imputed):
         X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded
     )
 
-    # Scale features
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
-    # Train XGBoost model
+    # Fit every learned preprocessing step on training data only.
     print("\nTraining XGBoost Classifier...")
-    model = XGBClassifier(
-        n_estimators=200,
-        learning_rate=0.1,
-        max_depth=6,
-        random_state=42,
-        n_jobs=-1,
-        eval_metric='mlogloss'
-    )
-    model.fit(X_train_scaled, y_train)
+    pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler()),
+        ('model', XGBClassifier(
+            n_estimators=200,
+            learning_rate=0.1,
+            max_depth=6,
+            random_state=42,
+            n_jobs=-1,
+            eval_metric='mlogloss'
+        )),
+    ])
+    pipeline.fit(X_train, y_train)
 
     # Evaluate
-    y_pred = model.predict(X_test_scaled)
+    y_pred = pipeline.predict(X_test)
 
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, average='macro')
@@ -294,7 +287,7 @@ def train_multiclass_classifier(df, X_imputed):
     print(f"  Recall (Macro): {recall:.4f}")
     print(f"  F1-Score (Macro): {f1:.4f}")
 
-    return model, scaler, le, {
+    return pipeline, le, {
         'accuracy': accuracy, 'precision': precision,
         'recall': recall, 'f1': f1
     }
@@ -341,24 +334,20 @@ def main():
     # Load and prepare data
     df = load_and_prepare_data()
     df = select_features(df)
-    df, X_imputed, imputer = prepare_features(df)
+    df, X_features = prepare_features(df)
 
     # Train models
-    reg_model, reg_scaler, reg_metrics = train_regression_model(df, X_imputed)
-    bin_model, bin_scaler, bin_metrics = train_binary_classifier(df, X_imputed)
-    multi_model, multi_scaler, le, multi_metrics = train_multiclass_classifier(df, X_imputed)
+    reg_pipeline, reg_metrics = train_regression_model(df, X_features)
+    bin_pipeline, bin_metrics = train_binary_classifier(df, X_features)
+    multi_pipeline, le, multi_metrics = train_multiclass_classifier(df, X_features)
 
     # Save models
     models_to_save = {
-        'regression_model': reg_model,
-        'regression_scaler': reg_scaler,
-        'binary_classifier': bin_model,
-        'binary_scaler': bin_scaler,
-        'multiclass_classifier': multi_model,
-        'multiclass_scaler': multi_scaler,
+        'regression_pipeline': reg_pipeline,
+        'binary_pipeline': bin_pipeline,
+        'multiclass_pipeline': multi_pipeline,
         'label_encoder': le,
-        'imputer': imputer,
-        'feature_names': X_imputed.columns.tolist()
+        'feature_names': X_features.columns.tolist()
     }
 
     save_models(models_to_save)

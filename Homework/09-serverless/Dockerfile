@@ -1,7 +1,12 @@
-FROM agrigorev/model-2025-hairstyle:v1
+FROM python:3.11-slim
 
-RUN pip install numpy onnxruntime pillow
+WORKDIR /app
 
-COPY lambda_function.py .
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [ "lambda_function.lambda_handler" ]
+COPY download_model.py inference.py local_app.py ./
+RUN python download_model.py
+
+EXPOSE 9696
+CMD ["gunicorn", "--bind=0.0.0.0:9696", "local_app:app"]

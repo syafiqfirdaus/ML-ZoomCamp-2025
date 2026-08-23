@@ -1,12 +1,14 @@
-# Homework 09 - Serverless Deep Learning
+# Homework 09 - Local ONNX Deep Learning Inference
 
 This folder contains the solution for Homework 09 of the ML Zoomcamp 2025.
 
 ## Files
 
 - `q1_q4_solver.py`: Python script to solve Questions 1-4 (Model inspection, Preprocessing, Local Inference).
-- `lambda_function.py`: AWS Lambda function handler code.
-- `Dockerfile`: Configuration to build the Docker image for the Lambda function.
+- `inference.py`: Shared ONNX image preprocessing and inference code.
+- `local_app.py`: Local Flask prediction API.
+- `download_model.py`: Downloads the course model artifacts.
+- `Dockerfile`: Runs the local API in a container.
 - `homework.md`: The homework assignment text.
 
 ## Prerequisites
@@ -40,9 +42,19 @@ This script will:
 4. Print the first pixel R channel value (Q3).
 5. Print the model output prediction (Q4).
 
-### Question 5 & 6 (Docker)
+### Local API
 
-To build and run the Docker container for the Lambda function:
+```bash
+pip install -r requirements.txt
+python download_model.py
+python local_app.py
+```
+
+Then run `python test_local.py` from another terminal, or POST JSON containing an image URL to `http://localhost:9696/predict`.
+
+### Docker
+
+To build and run the local API container:
 
 1. **Build the image**:
 
@@ -50,12 +62,10 @@ To build and run the Docker container for the Lambda function:
    docker build -t homework09-hair-classifier .
    ```
 
-   (Note: The base image `agrigorev/model-2025-hairstyle:v1` is approx 608MB, which is the answer to Q5).
-
 2. **Run the container**:
 
    ```bash
-   docker run -it --rm -p 8080:8080 homework09-hair-classifier
+   docker run --rm -p 9696:9696 homework09-hair-classifier
    ```
 
 3. **Test the function**:
@@ -63,7 +73,8 @@ To build and run the Docker container for the Lambda function:
    Open a new terminal and send a POST request with an image URL:
 
    ```bash
-   curl -XPOST "http://localhost:8080/2015-03-31/functions/function/invocations" \
+   curl -X POST "http://localhost:9696/predict" \
+   -H "Content-Type: application/json" \
    -d '{"url": "https://habrastorage.org/webt/yf/_d/ok/yf_dokzqy3vcritme8ggnzqlvwa.jpeg"}'
    ```
 
@@ -71,5 +82,5 @@ To build and run the Docker container for the Lambda function:
 
 ## Notes
 
-- The Docker image uses `agrigorev/model-2025-hairstyle:v1` as the base, which already includes the model file `hair_classifier_empty.onnx`.
-- The `lambda_function.py` includes the logic required to download the image, preprocess it, and run the ONNX model.
+- This folder originated as serverless coursework, but its maintained interface is now fully local.
+- Model artifacts are downloaded locally and excluded from version control.

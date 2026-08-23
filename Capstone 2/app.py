@@ -2,18 +2,20 @@ from flask import Flask, request, jsonify
 import joblib
 import numpy as np
 import onnxruntime as ort
-import os
+from pathlib import Path
 
 app = Flask(__name__)
 
 # Load Model
-MODEL_PATH = 'best_model.onnx'
-SCALER_PATH = 'scaler.bin'
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / 'best_model.onnx'
+SCALER_PATH = BASE_DIR / 'scaler.bin'
+EXPECTED_FEATURE_COUNT = 7
 
 print("Loading scaler and ONNX model...")
 try:
-    scaler = joblib.load(SCALER_PATH)
-    session = ort.InferenceSession(MODEL_PATH)
+    scaler = joblib.load(str(SCALER_PATH))
+    session = ort.InferenceSession(str(MODEL_PATH))
     input_name = session.get_inputs()[0].name
     output_name = session.get_outputs()[0].name
     print("Loaded successfully.")
@@ -24,7 +26,7 @@ except Exception as e:
 
 @app.route('/health', methods=['GET'])
 def health():
-    if session is None:
+    if session is None or scaler is None:
         return jsonify({'status': 'unhealthy', 'reason': 'model not loaded'}), 500
     return jsonify({'status': 'healthy'}), 200
 
@@ -34,12 +36,18 @@ def predict():
         return jsonify({'error': 'Model not loaded'}), 500
 
     try:
-        data = request.get_json()
-        if 'features' not in data:
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict) or 'features' not in data:
             return jsonify({'error': 'Input must contain "features" list'}), 400
-        
-        features = data['features']
-        features = np.array(features).reshape(1, -1)
+
+        features = np.asarray(data['features'], dtype=np.float32)
+        if features.ndim != 1 or len(features) != EXPECTED_FEATURE_COUNT:
+            return jsonify({
+                'error': f'"features" must contain exactly {EXPECTED_FEATURE_COUNT} numbers'
+            }), 400
+        if not np.isfinite(features).all():
+            return jsonify({'error': 'All features must be finite numbers'}), 400
+        features = features.reshape(1, -1)
         
         # Scale
         features_scaled = scaler.transform(features).astype(np.float32)

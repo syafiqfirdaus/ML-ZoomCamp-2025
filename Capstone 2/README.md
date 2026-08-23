@@ -14,10 +14,10 @@ This iteration introduces significant enhancements:
     - **Correlation Heatmaps**: To analyze feature relationships.
     - **Distribution Plots**: Risk/Return profiles for class separation.
     - **Technical Indicators**: Visual overlays of RSI and MACD for signal confirmation.
-2. **Live Cloud Deployment**:
-    - Fully configured for **Render** deployment.
-    - Includes `render.yaml` for infrastructure-as-code.
-    - Dockerized with `gunicorn` for production-grade serving.
+2. **Local Deployment**:
+    - Flask API backed by ONNX Runtime.
+    - Direct Python and Docker workflows with a local smoke test.
+    - Optional Render configuration remains available.
 
 ## Dataset
 
@@ -49,17 +49,51 @@ graph LR
     (TensorFlow/Keras)"]
     C --> D["Model Conversion
     (ONNX)"]
-    D --> E[Inference API]
-    E --> F["Serverless
-    (AWS Lambda)"]
+    D --> E["Local Flask API
+    (ONNX Runtime)"]
     E --> G["Kubernetes
     (Flask App)"]
-    E --> H["Cloud (Render)"]
+    E --> H["Optional Cloud
+    (Render)"]
 ```
 
 ## Deployment Instructions
 
-### 1. Cloud (Render) - Recommended
+### 1. Local API - Recommended
+
+Run from the `Capstone 2` directory:
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+pip install -r requirements-k8s.txt
+python app.py
+```
+
+In another terminal:
+
+```bash
+python test_local.py
+```
+
+Or test directly:
+
+```bash
+curl http://localhost:9696/health
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"features": [0.01, 0.02, 0.05, 0.01, 55.0, 0.5, 0.4]}' \
+  http://localhost:9696/predict
+```
+
+To use Docker locally:
+
+```bash
+docker build -t capstone2-local -f Dockerfile.k8s .
+docker run --rm -p 9696:9696 capstone2-local
+```
+
+### 2. Cloud (Render) - Optional
 
 This project includes a `render.yaml` Blueprint for easy deployment.
 
@@ -79,21 +113,6 @@ curl https://capstone2-app.onrender.com/health
 curl -X POST -H "Content-Type: application/json" \
   -d '{"features": [0.01, 0.02, 0.05, 0.01, 55.0, 0.5, 0.4]}' \
   https://capstone2-app.onrender.com/predict
-```
-
-### 2. Serverless (AWS Lambda)
-
-The Lambda function is containerized using Docker and ONNX Runtime.
-
-```bash
-# Build the image
-docker build -t capstone1-lambda -f Dockerfile.lambda .
-
-# Run locally (Simulated Lambda)
-docker run -d -p 8080:8080 --name lambda-test capstone1-lambda
-
-# Test
-python test_lambda.py
 ```
 
 ### 3. Kubernetes (Kind)
@@ -122,9 +141,9 @@ curl -X POST -H "Content-Type: application/json" -d '{"features": [0.01, 0.02, 0
 ```
 
  **Deployment**:
-    - **Cloud**: Render Web Service (Live Public Endpoint).
-    - **Serverless**: AWS Lambda (simulated) for inference.
-    - **Kubernetes**: Scalable web service for predictions.
+    - **Local**: Flask API with ONNX Runtime, directly or in Docker.
+    - **Cloud**: Optional Render Web Service.
+    - **Kubernetes**: Scalable local web service for predictions.
 
 ## Tech Stack
 
@@ -133,7 +152,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"features": [0.01, 0.02, 0
 - **TensorFlow / Keras**
 - **Flask / FastAPI**
 - **Docker & Kubernetes (Kind/Minikube)**
-- **AWS Lambda & Render (Cloud)**
+- **ONNX Runtime, Docker, Kubernetes & Render (optional)**
 
 ## Setup
 

@@ -4,3 +4,4 @@ numpy
 joblib
 onnxruntime
 scikit-learn
+requests

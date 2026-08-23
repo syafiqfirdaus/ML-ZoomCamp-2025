@@ -31,32 +31,15 @@ def load_models():
     print("Loading models...")
 
     try:
-        with open(os.path.join(model_dir, 'regression_model.pkl'), 'rb') as f:
-            models['regression_model'] = pickle.load(f)
-
-        with open(os.path.join(model_dir, 'regression_scaler.pkl'), 'rb') as f:
-            models['regression_scaler'] = pickle.load(f)
-
-        with open(os.path.join(model_dir, 'binary_classifier.pkl'), 'rb') as f:
-            models['binary_classifier'] = pickle.load(f)
-
-        with open(os.path.join(model_dir, 'binary_scaler.pkl'), 'rb') as f:
-            models['binary_scaler'] = pickle.load(f)
-
-        with open(os.path.join(model_dir, 'multiclass_classifier.pkl'), 'rb') as f:
-            models['multiclass_classifier'] = pickle.load(f)
-
-        with open(os.path.join(model_dir, 'multiclass_scaler.pkl'), 'rb') as f:
-            models['multiclass_scaler'] = pickle.load(f)
+        for name in ('regression_pipeline', 'binary_pipeline', 'multiclass_pipeline'):
+            with open(os.path.join(model_dir, f'{name}.pkl'), 'rb') as f:
+                models[name] = pickle.load(f)
 
         with open(os.path.join(model_dir, 'label_encoder.pkl'), 'rb') as f:
             models['label_encoder'] = pickle.load(f)
 
         with open(os.path.join(model_dir, 'feature_names.pkl'), 'rb') as f:
             models['feature_names'] = pickle.load(f)
-
-        with open(os.path.join(model_dir, 'imputer.pkl'), 'rb') as f:
-            models['imputer'] = pickle.load(f)
 
         print("✓ All models loaded successfully!")
         return True
@@ -84,8 +67,8 @@ def prepare_features(data):
     # Create feature vector matching training data
     feature_names = models['feature_names']
 
-    # Initialize with zeros
-    features = np.zeros(len(feature_names))
+    # Pipelines impute omitted values using medians learned from training data.
+    features = np.full(len(feature_names), np.nan)
 
     # Fill in provided features
     for idx, feat in enumerate(feature_names):
@@ -138,10 +121,7 @@ def predict_regression():
         X = prepare_features(data)
 
         # Scale features
-        X_scaled = models['regression_scaler'].transform(X)
-
-        # Predict
-        prediction = models['regression_model'].predict(X_scaled)[0]
+        prediction = models['regression_pipeline'].predict(X)[0]
 
         return jsonify({
             'prediction_type': 'regression',
@@ -169,11 +149,8 @@ def predict_classification():
         X = prepare_features(data)
 
         # Scale features
-        X_scaled = models['binary_scaler'].transform(X)
-
-        # Predict
-        prediction = models['binary_classifier'].predict(X_scaled)[0]
-        probability = models['binary_classifier'].predict_proba(X_scaled)[0]
+        prediction = models['binary_pipeline'].predict(X)[0]
+        probability = models['binary_pipeline'].predict_proba(X)[0]
 
         return jsonify({
             'prediction_type': 'binary_classification',
@@ -203,11 +180,8 @@ def predict_risk():
         X = prepare_features(data)
 
         # Scale features
-        X_scaled = models['multiclass_scaler'].transform(X)
-
-        # Predict
-        prediction = models['multiclass_classifier'].predict(X_scaled)[0]
-        probabilities = models['multiclass_classifier'].predict_proba(X_scaled)[0]
+        prediction = models['multiclass_pipeline'].predict(X)[0]
+        probabilities = models['multiclass_pipeline'].predict_proba(X)[0]
 
         # Decode label
         risk_rating = models['label_encoder'].inverse_transform([prediction])[0]
@@ -244,18 +218,15 @@ def predict_all():
         X = prepare_features(data)
 
         # Regression prediction
-        X_reg_scaled = models['regression_scaler'].transform(X)
-        return_prediction = models['regression_model'].predict(X_reg_scaled)[0]
+        return_prediction = models['regression_pipeline'].predict(X)[0]
 
         # Binary classification
-        X_bin_scaled = models['binary_scaler'].transform(X)
-        quality_prediction = models['binary_classifier'].predict(X_bin_scaled)[0]
-        quality_proba = models['binary_classifier'].predict_proba(X_bin_scaled)[0]
+        quality_prediction = models['binary_pipeline'].predict(X)[0]
+        quality_proba = models['binary_pipeline'].predict_proba(X)[0]
 
         # Multi-class classification
-        X_multi_scaled = models['multiclass_scaler'].transform(X)
-        risk_prediction = models['multiclass_classifier'].predict(X_multi_scaled)[0]
-        risk_proba = models['multiclass_classifier'].predict_proba(X_multi_scaled)[0]
+        risk_prediction = models['multiclass_pipeline'].predict(X)[0]
+        risk_proba = models['multiclass_pipeline'].predict_proba(X)[0]
         risk_rating = models['label_encoder'].inverse_transform([risk_prediction])[0]
 
         return jsonify({

@@ -8,12 +8,17 @@
   - Project architecture and design
   - Data collection and preprocessing
   - Model training and optimization
-  - Deployment (AWS Lambda & Kubernetes)
+  - Deployment (local Flask API, Docker & Kubernetes)
   - Documentation and testing
 
 ## 🤖 AI Assistance
 
 ### Development Support
+
+- **OpenAI Codex** - AI development collaborator
+  - Migrated AWS Lambda inference workflows to local Flask and ONNX Runtime services
+  - Corrected train-only preprocessing and missing-target handling
+  - Added local API validation, smoke tests, and updated documentation
 
 - **Google Antigravity** - AI coding assistant
   - Code structure and best practices
@@ -41,8 +46,7 @@
 
 - **Docker** - Containerization
 - **Kubernetes (Kind)** - Container orchestration
-- **AWS Lambda** - Serverless computing
-- **Flask** - Web framework for API
+- **Flask + ONNX Runtime** - Local inference API
 
 ### Data Sources
 
