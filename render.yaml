@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: capstone2-app
+    name: syafiq-capstone2-app
     runtime: docker
     plan: free
     dockerContext: "Capstone 2"
