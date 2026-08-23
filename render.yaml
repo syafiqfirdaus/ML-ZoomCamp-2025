@@ -3,7 +3,7 @@ services:
     name: capstone2-app
     runtime: docker
     plan: free
-    dockerContext: "."
+    dockerContext: "Capstone 2"
     dockerfilePath: "Capstone 2/Dockerfile"
     healthCheckPath: /health
     envVars:
